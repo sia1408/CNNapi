@@ -1,1 +1,1 @@
-Program code for api for my deepfake model
+This is the API of my deepfake detection model, Facetell, which enables its integration on multiple platforms.
