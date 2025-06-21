@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 model = load_model('models/cnn_model.keras')
 print("Model loaded successfully.")
@@ -33,6 +35,9 @@ def predict():
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
     
+    if not os.path.exists('static'):
+        os.makedirs('static')
+
     file_path = os.path.join('static', file.filename)
     file.save(file_path)
 
@@ -46,12 +51,12 @@ def predict():
     prediction = model.predict(image)
     print(f"Raw prediction output: {prediction}")
 
-    probability = prediction[0][0]
+    probability = float(prediction[0][0])
     print(f"Extracted probability: {probability}")
     result = 'FAKE' if probability > 0.5 else 'REAL'
     print(f"Final result: {result}")
 
-    return jsonify({'prediction': result, 'probability': float(probability)})
+    return jsonify({'label': result, 'probability': probability})
 
 if __name__ == '__main__':
     if not os.path.exists('static'):

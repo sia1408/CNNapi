@@ -1,5 +1,6 @@
 tensorflow
 opencv-python
 flask
+flask-cors
 numpy
 gunicorn
